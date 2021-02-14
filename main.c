@@ -41,10 +41,10 @@ int		main(void)
 	t_data	*data;
 	t_img	*img;
 	t_wall	wall = {{0, 0, 0}, 100, 80, 0, 0x00ff0000, 0, 0};
-    char	*addr;
-    int		bits_per_pixel;
-    int		line_length;
-    int		endian;
+	char	*addr;
+	int		bits_per_pixel;
+	int		line_length;
+	int		endian;
 
 	(void)wall;
 	(void)img;
