@@ -51,7 +51,6 @@ int		main(void)
 	data = init();
 	img = mlx_new_image(data->xvar, data->width, data->height);
 	addr = mlx_get_data_addr(img, &bits_per_pixel, &line_length, &endian);
-	
 	for (int i = 0; i < 480; i++) {
 		my_mlx_pixel_put(addr, line_length, bits_per_pixel, i, i , 0x00ff0000);
 	}
