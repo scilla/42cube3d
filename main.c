@@ -1,60 +1,112 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: scilla <scilla@student.42.fr>              +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/22 17:50:22 by scilla            #+#    #+#             */
+/*   Updated: 2021/03/30 16:55:32 by scilla           ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
-#include "main.h"
-#include "structs.h"
-
-#include <stdio.h>
-#include <time.h>
-#include <math.h>
 #include <stdlib.h>
+#include "main.h"
 
-typedef struct s_data
+#ifndef INT32_MAX
+# define INT32_MAX 0x7fffffff
+#endif
+
+void		new_pkl(t_data *d)
 {
-	t_camera	camera;
-	t_xvar		*xvar;
-	t_win_list	*win;
-	int			height;
-	int			width;
-}				t_data;
+	int	x;
+	int	z;
+	int sbu;
+	int	sbo;
 
-t_data	*init()
-{
-	t_data	*data;
-
-	data = malloc(sizeof(t_data));
-	data->width = 640;
-	data->height = 480;
-	data->xvar = mlx_init();
-	data->win = mlx_new_window(data->xvar, data->width, data->height, "scilla");
-	return (data);
-}
-
-void	my_mlx_pixel_put(char *addr, int line_length, int bits_per_pixel, int x, int y, int color)
-{
-    char	*dst;
-
-    dst = addr + (y * line_length + x * (bits_per_pixel / 8));
-    *(unsigned int*)dst = color;
-}
-
-int		main(void)
-{
-	t_data	*data;
-	t_img	*img;
-	t_wall	wall = {{0, 0, 0}, 100, 80, 0, 0x00ff0000, 0, 0};
-	char	*addr;
-	int		bits_per_pixel;
-	int		line_length;
-	int		endian;
-
-	(void)wall;
-	(void)img;
-	data = init();
-	img = mlx_new_image(data->xvar, data->width, data->height);
-	addr = mlx_get_data_addr(img, &bits_per_pixel, &line_length, &endian);
-	for (int i = 0; i < 480; i++) {
-		my_mlx_pixel_put(addr, line_length, bits_per_pixel, i, i , 0x00ff0000);
+	if (d->spawn_time++ % 300)
+		return ;
+	while (1)
+	{
+		x = (double)rand() / INT32_MAX * d->world->x_len;
+		while (x < d->world->x_len)
+		{
+			z = (double)rand() / INT32_MAX * d->world->x_len;
+			while (z < d->world->z_len)
+			{
+				sbu = (int)z * d->world->x_len + (int)x;
+				sbo = (int)(z * d->world->x_len) / 50 + (int)(x / 50);
+				if (d->world->dist[sbu] > 25 && d->map->cells[sbo] == 0)
+				{
+					spawn_pkl(d, x, z);
+					return ;
+				}
+				z++;
+			}
+			x++;
+		}
 	}
-	mlx_put_image_to_window(data->xvar, data->win, img, 0, 0);
+}
+
+void		sprite_bounce(t_data *data)
+{
+	int				coll;
+	t_sprite		*spr;
+
+	spr = *data->sprites;
+	while (spr && 1)
+	{
+		spr->pos.x += spr->x_speed;
+		spr->pos.z += spr->z_speed;
+		coll = wall_collision(data, spr->pos, 20);
+		if (coll & 1)
+			spr->x_speed *= -1;
+		if (coll & 2)
+			spr->z_speed *= -1;
+		spr = spr->next;
+	}
+}
+
+int			game_loop(t_data *data)
+{
+	double			tdif;
+
+	sprite_bounce(data);
+	key_move(data);
+	//mouse_move(data);
+	ammo_hit(data);
+	ammo_pick(data);
+	enemy_hit(data);
+	expire_enm(data);
+	expire_pkl(data);
+	new_pkl(data);
+	data->img = mlx_new_image(data->xvar, data->width, data->height);
+	data->addr = mlx_get_data_addr(data->img, &data->bpp,
+	&data->line_len, &data->endian);
+	render_floor(data);
+	render_walls(data);
+	render_sprites(data);
+	draw_minimap(data);
+	draw_hud(data);
+	mlx_put_image_to_window(data->xvar, data->win, data->img, 0, 0);
+	mlx_destroy_image(data->xvar, data->img);
+	return (1);
+}
+
+int			main(int argc, char **argv)
+{
+	t_data	*data;
+
+	if (argc < 2)
+	{
+		write(1, "Error\nno map path provided\n", 27);
+		return (-1);
+	}
+	data = init(argv[1]);
+	mlx_loop_hook(data->xvar, &game_loop, data);
+	mlx_hook(data->win, 2, 1L << 0, &key_press, data);
+	mlx_hook(data->win, 3, 1L << 1, &key_release, data);
+	//mlx_mouse_hide();
 	mlx_loop(data->xvar);
 	return (1);
 }

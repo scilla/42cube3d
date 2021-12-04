@@ -1,0 +1,72 @@
+
+#include "main.h"
+
+#include <stdio.h>
+#include <time.h>
+#include <math.h>
+#include <stdlib.h>
+
+
+int		main(void)
+{
+	t_xvar	*mlx_ptr;
+	t_win_list	*win_ptr;
+
+	int		ixar[] = {0, -1, 1};
+	int		iyar[] = {0, -1, 1};
+
+	//srand(time(NULL) * 0);
+	srand(2);
+	int r = rand();
+
+	int		H = 900, W = 900;
+
+	//int		dist;
+
+	int		x = W/2;
+	int		y = H/2;
+	int		ix = 1, iy = 1, nx = 1, ny = 1;
+
+
+	//unsigned int clr = 0xff0088aa;
+	unsigned int clr = 0x00550088;
+
+	mlx_ptr = mlx_init();
+	win_ptr = mlx_new_window(mlx_ptr, W, H, "scilla");
+	while (1) {
+		x = (x + ix) % W;
+		y = (y + iy) % H;
+		
+		if (x <= 0)
+			x = W;
+		if (y <= 0)
+			y = H;
+
+		r = rand();
+		//dist = sqrt((x - W/2) * (x - W/2) + (y - H/2) * (y - H/2));
+		if (r < RAND_MAX / 300)
+		{
+			nx = ixar[rand() % 3];
+			ny = iyar[rand() % 3];
+			while ((nx == -ix && ny == -iy) || (nx == 0 && ny == 0))
+			{
+				nx = ixar[rand() % 3];
+				ny = iyar[rand() % 3];
+			}
+			ix = nx;
+			iy = ny;
+		}
+			clr += 1;
+		//printf("%2d,%2d - %4d, %4d\n", ix, iy, x, y);
+		mlx_pixel_put(mlx_ptr, win_ptr, x, y, clr);
+		/*mlx_pixel_put(mlx_ptr, win_ptr, W - x, H - y, clr);
+		mlx_pixel_put(mlx_ptr, win_ptr, x, H - y, clr);
+		mlx_pixel_put(mlx_ptr, win_ptr, W - x, y, clr);
+		if (time() > )
+		*/usleep(1000);
+		time = time();
+	}
+	mlx_loop(mlx_ptr);
+	(void)win_ptr;
+	return (1);
+}
