@@ -1,4 +1,4 @@
-R 900 720
+R 1600 1080
 NO ./assets/wall.xpm
 SO ./assets/wall.xpm
 WE ./assets/colors.xpm
