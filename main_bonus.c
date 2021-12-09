@@ -14,6 +14,11 @@
 #include <stdlib.h>
 #include "main.h"
 #include "structs.h"
+#include "key_mouse.h"
+
+#ifndef INT32_MAX
+# define INT32_MAX 0x7fffffff
+#endif
 
 void		new_pkl(t_data *d)
 {
@@ -142,7 +147,7 @@ int			main(int argc, char **argv)
 	// mlx_hook(data->win, 9, 0L, &enter_win, data);
 	// mlx_hook(data->win, 10, 0L, &exit_win, data);
 	mlx_mouse_hook(data->win, &mouse_key, data);
-	mlx_mouse_hide();
+	mlx_mouse_hide(data->xvar, data->win);
 	//start_music();
 	mlx_loop(data->xvar);
 	return (1);
