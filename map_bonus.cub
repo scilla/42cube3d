@@ -1,8 +1,8 @@
-R 1600 1080
+R 1400 900
 NO ./assets/wall.xpm
 SO ./assets/wall.xpm
-WE ./assets/colors.xpm
-EA ./assets/colors.xpm
+WE ./assets/wall.xpm
+EA ./assets/wall.xpm
 S ./assets/pickle2.xpm
 F 220,100,0
 C 225,30,0
