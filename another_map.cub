@@ -1,6 +1,6 @@
 R 1027 768
-NO ./assets/chepalle.xpm
-SO ./assets/chepalle.xpm
+NO ./assets/colors.xpm
+SO ./assets/colors.xpm
 WE ./assets/colors.xpm
 EA ./assets/colors.xpm
 S ./assets/pickle2.xpm
