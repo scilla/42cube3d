@@ -1,4 +1,4 @@
-R 1200 800
+R 1200 600
 NO ./assets/wall.xpm
 SO ./assets/wall.xpm
 WE ./assets/wall.xpm
